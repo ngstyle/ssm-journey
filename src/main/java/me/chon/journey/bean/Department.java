@@ -1,6 +1,14 @@
 package me.chon.journey.bean;
 
 public class Department {
+    public Department() {
+    }
+
+    public Department(Integer deptId, String deptName) {
+        this.deptId = deptId;
+        this.deptName = deptName;
+    }
+
     private Integer deptId;
 
     private String deptName;

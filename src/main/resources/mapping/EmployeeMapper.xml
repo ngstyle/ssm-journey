@@ -17,8 +17,8 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="d_id" jdbcType="INTEGER" property="dId" />
     <association property="department" javaType="me.chon.journey.bean.Department">
-        <id column="dept_id" jdbcType="Integer" property="deptId"/>
-        <result column="dept_name" jdbcType="VARCHAR" property="deptName"/>
+        <id column="dept_id" property="deptId"/>
+        <result column="dept_name" property="deptName"/>
     </association>
   </resultMap>
 
@@ -129,9 +129,6 @@
     left join tbl_dept d on e.d_id = d.dept_id
     where emp_id = #{empId,jdbcType=INTEGER}
   </select>
-
-
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from tbl_emp
     where emp_id = #{empId,jdbcType=INTEGER}
@@ -251,36 +248,6 @@
       d_id = #{dId,jdbcType=INTEGER}
     where emp_id = #{empId,jdbcType=INTEGER}
   </update>
-  <resultMap id="BaseResultMap" type="me.chon.journey.bean.Employee">
-    <id column="emp_id" jdbcType="INTEGER" property="empId" />
-    <result column="emp_name" jdbcType="VARCHAR" property="empName" />
-    <result column="gender" jdbcType="VARCHAR" property="gender" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="d_id" jdbcType="INTEGER" property="dId" />
-  </resultMap>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from tbl_emp
-    where emp_id = #{empId,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="me.chon.journey.bean.Employee">
-    insert into tbl_emp (emp_id, emp_name, gender, 
-      email, d_id)
-    values (#{empId,jdbcType=INTEGER}, #{empName,jdbcType=VARCHAR}, #{gender,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{dId,jdbcType=INTEGER})
-  </insert>
-  <update id="updateByPrimaryKey" parameterType="me.chon.journey.bean.Employee">
-    update tbl_emp
-    set emp_name = #{empName,jdbcType=VARCHAR},
-      gender = #{gender,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      d_id = #{dId,jdbcType=INTEGER}
-    where emp_id = #{empId,jdbcType=INTEGER}
-  </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select emp_id, emp_name, gender, email, d_id
-    from tbl_emp
-    where emp_id = #{empId,jdbcType=INTEGER}
-  </select>
   <select id="selectAll" resultMap="BaseResultMap">
     select emp_id, emp_name, gender, email, d_id
     from tbl_emp
