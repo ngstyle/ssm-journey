@@ -5,7 +5,7 @@
   Time: 上午11:01
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <head>
@@ -20,7 +20,7 @@
         需要加上项目名，http://localhost:3306/journey
     --%>
     <link href="${APP_PATH }/resources/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <script src="${APP_PATH }/resources/jquery-1.12.4/jquery.min.js"></script>
     <script src="${APP_PATH}/resources/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 </head>
 <body>
