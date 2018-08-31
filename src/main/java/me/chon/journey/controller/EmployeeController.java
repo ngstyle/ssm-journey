@@ -76,4 +76,30 @@ public class EmployeeController {
 
         return httpResult;
     }
+
+    @RequestMapping(value = "/checkuser", method = RequestMethod.POST)
+    @ResponseBody
+    public HttpResult<Boolean> checkUser(@RequestParam(value = "empName") String empName) {
+        boolean isUserNameExist = employeeService.isUserNameExist(empName);
+
+        String regex = "(^[a-zA-Z0-9_-]{6,16}$)|(^[\\u2E80-\\u9FFF]{2,5})";
+        HttpResult httpResult;
+        if (!empName.matches(regex)) {
+            httpResult = HttpResult.fail();
+            httpResult.setMessage("用户名可以是2-5位中文或者6-16位英文和数字的组合<后端>");
+            httpResult.setData(false);
+            return httpResult;
+        }
+
+        if (isUserNameExist) {
+            httpResult = HttpResult.fail();
+            httpResult.setMessage("用户名已存在");
+        } else {
+            httpResult = HttpResult.success();
+            httpResult.setMessage("");
+        }
+        httpResult.setData(!isUserNameExist);
+
+        return httpResult;
+    }
 }
