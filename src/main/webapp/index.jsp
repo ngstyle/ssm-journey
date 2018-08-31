@@ -48,7 +48,7 @@
                         <label class="col-sm-2 control-label">email</label>
                         <div class="col-sm-10">
                             <input type="text" name="email" class="form-control" id="email_add_input"
-                                   placeholder="email@atguigu.com">
+                                   placeholder="email@chon.me">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -139,6 +139,8 @@
 </div>
 
 <script type="text/javascript">
+    var totalRecord;
+
     // 使用Ajax 发送请求，获取json 数据
     $(function () {
         to_page(1);
@@ -203,6 +205,8 @@
 
         $("#page_info_area").append("当前 " + result.data.pageNum + " 页，总 " + result.data.pages + " 页，" +
             "总 " + result.data.total + " 条记录");
+
+        totalRecord = result.data.total;
     }
 
     function build_page_nav(result) {
@@ -273,7 +277,6 @@
 
     //查出所有的部门信息并显示在下拉列表中
     function getDepts() {
-
         $.ajax({
             url: "${APP_PATH}/depts",
             type: "GET",
@@ -285,8 +288,31 @@
                 });
             }
         });
-
     }
+
+    //点击保存，保存员工。
+    $("#emp_save_btn").click(function () {
+
+        // 发送ajax请求保存员工
+        $.ajax({
+            url: "${APP_PATH}/emp",
+            type: "POST",
+            data: $("#empAddModal form").serialize(),
+            success: function (result) {
+                if (result.code == 100) {
+                    //员工保存成功；
+                    //1、关闭模态框
+                    $("#empAddModal").modal('hide');
+
+                    //2、来到最后一页，显示刚才保存的数据
+                    //发送ajax请求显示最后一页数据即可
+                    to_page(totalRecord);
+                } else {
+
+                }
+            }
+        });
+    });
 
 </script>
 </body>
