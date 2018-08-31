@@ -1,4 +1,4 @@
-package me.chon.mapping;
+package me.chon;
 
 
 import me.chon.journey.bean.Department;

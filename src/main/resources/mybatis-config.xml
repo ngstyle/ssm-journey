@@ -11,4 +11,9 @@
     <typeAliases>
         <package name="me.chon.journey.bean"/>
     </typeAliases>
+
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+        </plugin>
+    </plugins>
 </configuration>
