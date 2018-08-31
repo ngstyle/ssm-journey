@@ -30,7 +30,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title" id="myModalLabel">员工添加</h4>
             </div>
             <div class="modal-body">
@@ -38,14 +39,16 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">empName</label>
                         <div class="col-sm-10">
-                            <input type="text" name="empName" class="form-control" id="empName_add_input" placeholder="empName">
+                            <input type="text" name="empName" class="form-control" id="empName_add_input"
+                                   placeholder="empName">
                             <span class="help-block"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label">email</label>
                         <div class="col-sm-10">
-                            <input type="text" name="email" class="form-control" id="email_add_input" placeholder="email@atguigu.com">
+                            <input type="text" name="email" class="form-control" id="email_add_input"
+                                   placeholder="email@atguigu.com">
                             <span class="help-block"></span>
                         </div>
                     </div>
@@ -262,10 +265,28 @@
         navEle.appendTo("#page_nav_area");
     }
 
-
-    $("#emp_add_modal_btn").click(function(){
+    // 点击新增按钮弹出模态框。
+    $("#emp_add_modal_btn").click(function () {
+        getDepts();
         $('#empAddModal').modal();
     });
+
+    //查出所有的部门信息并显示在下拉列表中
+    function getDepts() {
+
+        $.ajax({
+            url: "${APP_PATH}/depts",
+            type: "GET",
+            success: function (result) {
+                // 显示部门信息在下拉列表中
+                $.each(result.data, function () {
+                    var optionEle = $("<option></option>").append(this.deptName).attr("value", this.deptId);
+                    optionEle.appendTo("#empAddModal select");
+                });
+            }
+        });
+
+    }
 
 </script>
 </body>
