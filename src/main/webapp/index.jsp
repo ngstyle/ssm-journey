@@ -397,6 +397,17 @@
                     to_page(totalRecord);
                 } else {
 
+
+                    $.each(result.data, function () {
+
+                        if (this.field == "email") {
+                            //显示邮箱错误信息
+                            show_validate_msg("#email_add_input", "error", this.defaultMessage);
+                        } else if (this.field == "empName") {
+                            //显示员工名字的错误信息
+                            show_validate_msg("#empName_add_input", "error", this.defaultMessage);
+                        }
+                    });
                 }
             }
         });

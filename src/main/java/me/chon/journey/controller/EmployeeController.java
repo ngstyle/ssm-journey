@@ -8,11 +8,14 @@ import me.chon.journey.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -67,14 +70,15 @@ public class EmployeeController {
 
     @RequestMapping(value = "/emp", method = RequestMethod.POST)
     @ResponseBody
-    public HttpResult<Integer> addEmp(Employee employee) {
+    public HttpResult<List<FieldError>> addEmp(@Valid Employee employee, BindingResult bindingResult) {
 
-        int count = employeeService.addEmp(employee);
+        if (bindingResult.hasErrors()) {
+            HttpResult failResult = HttpResult.fail();
+            failResult.setData(bindingResult.getFieldErrors());
+            return failResult;
+        }
 
-        HttpResult httpResult = HttpResult.success();
-        httpResult.setData(count);
-
-        return httpResult;
+        return HttpResult.success();
     }
 
     @RequestMapping(value = "/checkuser", method = RequestMethod.POST)
