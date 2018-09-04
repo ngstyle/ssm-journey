@@ -484,7 +484,7 @@
     //1）、可以在创建按钮的时候绑定。    2）、绑定点击.live()
     //jquery新版没有live，使用on进行替代
     $(document).on("click", ".edit_btn", function () {
-
+        // TODO 两个异步需要同步，即多个AJAX操作顺序依赖
         //1、查出部门信息，并显示部门列表
         getDepts("#empUpdateModal select");
         //2、查出员工信息，显示员工信息
