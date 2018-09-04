@@ -94,6 +94,14 @@ public class EmployeeController {
         return httpResult;
     }
 
+    @DeleteMapping("/emp/{empId}")
+    public HttpResult<Integer> delEmp (@PathVariable("empId") Integer empId) {
+        HttpResult httpResult = HttpResult.success();
+        httpResult.setData(employeeService.delEmp(empId));
+
+        return httpResult;
+    }
+
     @PostMapping(value = "/checkuser")
     public HttpResult<Boolean> checkUser(@RequestParam(value = "empName") String empName) {
         boolean isUserNameExist = employeeService.isUserNameExist(empName);

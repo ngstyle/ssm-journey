@@ -196,7 +196,7 @@
 </div>
 
 <script type="text/javascript">
-    var totalRecord,currentPage;
+    var totalRecord, currentPage;
 
     // 使用Ajax 发送请求，获取json 数据
     $(function () {
@@ -532,6 +532,26 @@
                 to_page(currentPage);
             }
         });
+    });
+
+
+    //单个删除
+    $(document).on("click", ".delete_btn", function () {
+        //1、弹出是否确认删除对话框
+        var empName = $(this).parents("tr").find("td:eq(1)").text();
+        var empId = $(this).attr("del-id");
+        if (confirm("确认删除【" + empName + "】吗？")) {
+            //确认，发送ajax请求删除即可
+            $.ajax({
+                url: "${APP_PATH}/emp/" + empId,
+                type: "DELETE",
+                success: function (result) {
+                    alert(result.message + result.data);
+                    //回到本页
+                    to_page(currentPage);
+                }
+            });
+        }
     });
 
 </script>

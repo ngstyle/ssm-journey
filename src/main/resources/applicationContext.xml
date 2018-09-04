@@ -62,7 +62,11 @@
     <!--配置一个可以执行批量的sqlSession-->
     <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
         <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
-        <constructor-arg name="executorType" value="BATCH"/>
+        <constructor-arg name="executorType" value="SIMPLE"/>
+
+        <!--BATCH 导致增删改 返回影响行数-2147482646-->
+        <!--“If the BATCH executor is in use, the update counts are being lost. ”-->
+        <!--<constructor-arg name="executorType" value="BATCH"/>-->
     </bean>
     <!--===================== 配置和MyBatis的整合 =====================-->
 
