@@ -13,6 +13,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -94,10 +96,32 @@ public class EmployeeController {
         return httpResult;
     }
 
-    @DeleteMapping("/emp/{empId}")
-    public HttpResult<Integer> delEmp (@PathVariable("empId") Integer empId) {
+    @DeleteMapping("/emp/{empIds}")
+    public HttpResult<Integer> delEmp (@PathVariable("empIds") String empIds) {
+
         HttpResult httpResult = HttpResult.success();
-        httpResult.setData(employeeService.delEmp(empId));
+        try {
+            if (empIds.contains("-")) {
+                ArrayList<Integer> list = new ArrayList();
+                String[] empIdsArr = empIds.split("-");
+                for (String empIdStr : empIdsArr) {
+                    list.add(Integer.parseInt(empIdStr));
+                }
+
+                int count = employeeService.delEmpByIds(list);
+                if (count != list.size()) {
+                    httpResult = HttpResult.fail();
+                }
+                httpResult.setData(count);
+            } else {
+                int empId = Integer.parseInt(empIds);
+                httpResult.setData(employeeService.delEmpById(empId));
+            }
+        } catch (NumberFormatException e) {
+            httpResult = HttpResult.fail();
+            httpResult.setMessage("参数有误");
+            httpResult.setData(0);
+        }
 
         return httpResult;
     }

@@ -11,14 +11,14 @@ public class HttpResult<T> {
     public static HttpResult success() {
         HttpResult httpResult = new HttpResult();
         httpResult.setCode(100);
-        httpResult.setMessage("请求成功");
+        httpResult.setMessage("处理成功");
         return httpResult;
     }
 
     public static HttpResult fail() {
         HttpResult httpResult = new HttpResult();
         httpResult.setCode(200);
-        httpResult.setMessage("请求失败");
+        httpResult.setMessage("处理失败");
         return httpResult;
     }
 

@@ -43,7 +43,26 @@ public class EmployeeService {
         return employeeMapper.updateByPrimaryKeySelective(employee);
     }
 
-    public int delEmp(Integer empId) {
+    /**
+     * 根据empId 删除
+     * @param empId
+     * @return
+     */
+    public int delEmpById(int empId) {
         return employeeMapper.deleteByPrimaryKey(empId);
+    }
+
+    /**
+     * 批量删除
+     * @param empIds
+     * @return
+     */
+    public int delEmpByIds(List<Integer> empIds) {
+
+        EmployeeExample employeeExample = new EmployeeExample();
+        EmployeeExample.Criteria criteria = employeeExample.createCriteria();
+        criteria.andEmpIdIn(empIds);
+
+        return employeeMapper.deleteByExample(employeeExample);
     }
 }
