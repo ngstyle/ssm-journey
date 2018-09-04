@@ -29,7 +29,7 @@ public class MvcTest {
     @Autowired
     WebApplicationContext context;
 
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Before
     public void initMockMvc() {

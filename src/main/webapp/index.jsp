@@ -25,6 +25,63 @@
 </head>
 <body>
 
+
+<!-- 员工修改的模态框 -->
+<div class="modal fade" id="empUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">员工修改</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">empName</label>
+                        <div class="col-sm-10">
+                            <p class="form-control-static" id="empName_update_static"></p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">email</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="email" class="form-control" id="email_update_input"
+                                   placeholder="email@atguigu.com">
+                            <span class="help-block"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">gender</label>
+                        <div class="col-sm-10">
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="gender1_update_input" value="M" checked="checked">
+                                男
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="gender" id="gender2_update_input" value="F"> 女
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">deptName</label>
+                        <div class="col-sm-4">
+                            <!-- 部门提交部门id即可 -->
+                            <select class="form-control" name="dId">
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="emp_update_btn">更新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- 员工添加的模态框 -->
 <div class="modal fade" id="empAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -139,7 +196,7 @@
 </div>
 
 <script type="text/javascript">
-    var totalRecord;
+    var totalRecord,currentPage;
 
     // 使用Ajax 发送请求，获取json 数据
     $(function () {
@@ -177,14 +234,16 @@
             let tdDeptName = $("<td></td>").append(emp.department.deptName);
 
             let btnEdit = $("<button></button>")
-                .addClass("btn btn-primary btn-sm")
+                .addClass("btn btn-primary btn-sm edit_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-pencil"))
-                .append("编辑");
+                .append("编辑")
+                .attr("edit-id", emp.empId);     //为编辑按钮添加一个自定义的属性，来表示当前员工id
 
             let btnDelete = $("<button></button>")
-                .addClass("btn btn-danger btn-sm")
+                .addClass("btn btn-danger btn-sm delete_btn")
                 .append($("<span></span>").addClass("glyphicon glyphicon-trash"))
-                .append("删除");
+                .append("删除")
+                .attr("del-id", emp.empId);     //为删除按钮添加一个自定义的属性来表示当前删除的员工id
 
             let tdBtn = $("<td></td>").append(btnEdit).append(" ").append(btnDelete);
 
@@ -207,6 +266,7 @@
             "总 " + result.data.total + " 条记录");
 
         totalRecord = result.data.total;
+        currentPage = result.data.pageNum;
     }
 
     function build_page_nav(result) {
@@ -282,12 +342,14 @@
         //清除表单数据（表单完整重置（表单的数据，表单的样式））
         reset_form("#empAddModal form");
 
-        getDepts();
+        getDepts("#empAddModal select");
         $('#empAddModal').modal();
     });
 
     //查出所有的部门信息并显示在下拉列表中
-    function getDepts() {
+    function getDepts(ele) {
+        //清空之前下拉列表的值
+        $(ele).empty();
         $.ajax({
             url: "${APP_PATH}/depts",
             type: "GET",
@@ -295,7 +357,7 @@
                 // 显示部门信息在下拉列表中
                 $.each(result.data, function () {
                     var optionEle = $("<option></option>").append(this.deptName).attr("value", this.deptId);
-                    optionEle.appendTo("#empAddModal select");
+                    optionEle.appendTo(ele);
                 });
             }
         });
@@ -304,7 +366,7 @@
     //校验表单数据
     function validate_add_form() {
         // 用户名存在的情况下 不用再去检测是否合法
-        if($("#emp_save_btn").attr("ajax-va") !== "error") {
+        if ($("#emp_save_btn").attr("ajax-va") !== "error") {
             //1、拿到要校验的数据，使用正则表达式
             var empName = $("#empName_add_input").val();
             var regName = /(^[a-zA-Z0-9_-]{6,16}$)|(^[\u2E80-\u9FFF]{2,5})/;
@@ -409,6 +471,65 @@
                         }
                     });
                 }
+            }
+        });
+    });
+
+    // 如果我们是按钮创建之前就绑定click事件，绑定不上。
+    //1）、可以在创建按钮的时候绑定。    2）、绑定点击.live()
+    //jquery新版没有live，使用on进行替代
+    $(document).on("click", ".edit_btn", function () {
+
+        //1、查出部门信息，并显示部门列表
+        getDepts("#empUpdateModal select");
+        //2、查出员工信息，显示员工信息
+        getEmp($(this).attr("edit-id"));
+
+        //3、把员工的id传递给模态框的更新按钮
+        $("#emp_update_btn").attr("edit-id", $(this).attr("edit-id"));
+        $("#empUpdateModal").modal();
+    });
+
+    function getEmp(id) {
+        $.ajax({
+            url: "${APP_PATH}/emp/" + id,
+            type: "GET",
+            success: function (result) {
+                //console.log(result);
+                var empData = result.data;
+                $("#empName_update_static").text(empData.empName);
+                $("#email_update_input").val(empData.email);
+                $("#empUpdateModal input[name=gender]").val([empData.gender]);
+                $("#empUpdateModal select").val([empData.dId]);
+            }
+        });
+    }
+
+
+    //点击更新，更新员工信息
+    $("#emp_update_btn").click(function () {
+        //验证邮箱是否合法
+        //1、校验邮箱信息
+        var email = $("#email_update_input").val();
+        var regEmail = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
+        if (!regEmail.test(email)) {
+            show_validate_msg("#email_update_input", "error", "邮箱格式不正确");
+            return false;
+        } else {
+            show_validate_msg("#email_update_input", "success", "");
+        }
+
+        //2、发送ajax请求保存更新的员工数据
+        $.ajax({
+            url: "${APP_PATH}/emp/" + $(this).attr("edit-id"),
+            type: "PUT",
+            data: $("#empUpdateModal form").serialize(),
+            success: function (result) {
+                //alert(result.msg);
+                //1、关闭对话框
+                $("#empUpdateModal").modal("hide");
+                //2、回到本页面
+                to_page(currentPage);
             }
         });
     });

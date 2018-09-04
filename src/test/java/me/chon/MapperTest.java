@@ -45,9 +45,9 @@ public class MapperTest {
 
 
         // 测试部门的添加
-//        departmentMapper.insertSelective(new Department(null,"开发部"));
-//        departmentMapper.insertSelective(new Department(null,"测试部"));
-//        departmentMapper.insertSelective(new Department(null,"产品部"));
+        departmentMapper.insertSelective(new Department(null,"开发部"));
+        departmentMapper.insertSelective(new Department(null,"测试部"));
+        departmentMapper.insertSelective(new Department(null,"产品部"));
 
         // 测试员工的添加
 //        employeeMapper.insertSelective(new Employee(null,"nohc","F","chon_den@sina.com", 1));

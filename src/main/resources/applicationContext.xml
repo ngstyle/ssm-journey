@@ -77,7 +77,7 @@
     <!--开启基于注解的事务，使用xml配置形式的事务（主要是使用配置式）-->
     <aop:config>
         <!--切入点表达式-->
-        <aop:pointcut id="txPoint" expression="execution(* me.chon.journey.service..*(..))"/>
+        <aop:pointcut id="txPoint" expression="execution(public * me.chon.journey.service..*(..))"/>
         <!--配置事务增强-->
         <aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
     </aop:config>

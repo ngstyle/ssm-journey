@@ -10,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.List;
 /**
  * 处理员工CRUD
  */
-@Controller
+@RestController
 public class EmployeeController {
 
     @Autowired
@@ -50,7 +47,6 @@ public class EmployeeController {
 
 
     @RequestMapping("/emps")
-    @ResponseBody
     public HttpResult<PageInfo> getEmpsWithJson(@RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum) {
 
         // 在查询之前 使用pageHelper
@@ -68,8 +64,7 @@ public class EmployeeController {
         return httpResult;
     }
 
-    @RequestMapping(value = "/emp", method = RequestMethod.POST)
-    @ResponseBody
+    @PostMapping(value = "/emp")
     public HttpResult<List<FieldError>> addEmp(@Valid Employee employee, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -78,11 +73,28 @@ public class EmployeeController {
             return failResult;
         }
 
+        employeeService.addEmp(employee);
         return HttpResult.success();
     }
 
-    @RequestMapping(value = "/checkuser", method = RequestMethod.POST)
-    @ResponseBody
+    @GetMapping(value = "/emp/{id}")
+    public HttpResult<Employee> getEmp(@PathVariable("id") Integer id) {
+        Employee employee = employeeService.getEmp(id);
+
+        HttpResult httpResult = HttpResult.success();
+        httpResult.setData(employee);
+        return httpResult;
+    }
+
+    @PutMapping(value = "/emp/{empId}")
+    public HttpResult<Integer> updateEmp(Employee employee) {
+        HttpResult httpResult = HttpResult.success();
+        httpResult.setData(employeeService.updateEmp(employee));
+
+        return httpResult;
+    }
+
+    @PostMapping(value = "/checkuser")
     public HttpResult<Boolean> checkUser(@RequestParam(value = "empName") String empName) {
         boolean isUserNameExist = employeeService.isUserNameExist(empName);
 
